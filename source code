@@ -1,0 +1,230 @@
+#include <iostream>
+using namespace std;
+
+class Book {
+private:
+    int id;
+    string title;
+    string author;
+    int year;
+
+public:
+    Book() {
+        id = 0;
+        title = "";
+        author = "";
+        year = 0;
+    }
+
+    Book(int i, string t, string a, int y) {
+        id = i;
+        title = t;
+        author = a;
+        year = y;
+    }
+
+    int getId() { return id; }
+    string getTitle() { return title; }
+    string getAuthor() { return author; }
+    int getYear() { return year; }
+
+    void setTitle(string t) { title = t; }
+    void setAuthor(string a) { author = a; }
+    void setYear(int y) { year = y; }
+
+    void show() {
+        cout << "----------------------\n";
+        cout << "Book ID   : " << id << endl;
+        cout << "Title     : " << title << endl;
+        cout << "Author    : " << author << endl;
+        cout << "Year      : " << year << endl;
+    }
+};
+
+class Library {
+private:
+    static const int CAP = 100;
+    Book books[CAP];
+    int count;
+    int nextId;
+
+public:
+    Library() {
+        count = 0;
+        nextId = 1;
+    }
+
+    // Add Book
+    void addBook() {
+        if (count >= CAP) {
+            cout << "Library is full!\n";
+            return;
+        }
+
+        string title, author;
+        int year;
+
+        cin.ignore();
+
+        cout << "Enter title: ";
+        getline(cin, title);
+
+        cout << "Enter author: ";
+        getline(cin, author);
+
+        cout << "Enter year: ";
+        cin >> year;
+
+        books[count] = Book(nextId, title, author, year);
+
+        cout << "\nBook added successfully!\n";
+        cout << "Generated Book ID: " << nextId << endl;
+
+        count++;
+        nextId++;
+    }
+
+    // List Books
+    void listBooks() {
+        if (count == 0) {
+            cout << "No books available.\n";
+            return;
+        }
+
+        for (int i = 0; i < count; i++) {
+            books[i].show();
+        }
+    }
+
+    // Find Book Index
+    int findById(int id) {
+        for (int i = 0; i < count; i++) {
+            if (books[i].getId() == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Search Book 
+    void searchBook() {
+        int id;
+        cout << "Enter Book ID to search: ";
+        cin >> id;
+
+        int index = findById(id);
+
+        if (index != -1) {
+            cout << "\n===== Book Found =====\n";
+            books[index].show();   // already includes ID
+            cout << "----------------------\n";
+        } else {
+            cout << "Book not found.\n";
+        }
+    }
+
+    // Update Book
+    void updateBook() {
+        int id;
+        cout << "Enter Book ID to update: ";
+        cin >> id;
+
+        int index = findById(id);
+
+        if (index == -1) {
+            cout << "Book not found.\n";
+            return;
+        }
+
+        string title, author;
+        int year;
+
+        cin.ignore();
+
+        cout << "Enter new title: ";
+        getline(cin, title);
+
+        cout << "Enter new author: ";
+        getline(cin, author);
+
+        cout << "Enter new year: ";
+        cin >> year;
+
+        books[index].setTitle(title);
+        books[index].setAuthor(author);
+        books[index].setYear(year);
+
+        cout << "Book updated successfully!\n";
+    }
+
+    // Delete Book
+    void deleteBook() {
+        int id;
+        cout << "Enter Book ID to delete: ";
+        cin >> id;
+
+        int index = findById(id);
+
+        if (index == -1) {
+            cout << "Book not found.\n";
+            return;
+        }
+
+        for (int i = index; i < count - 1; i++) {
+            books[i] = books[i + 1];
+        }
+
+        count--;
+
+        cout << "Book deleted successfully!\n";
+    }
+};
+
+int main() {
+    Library lib;
+    int choice;
+
+    do {
+        cout << "\n===== Book Management System =====\n";
+        cout << "1. Add Book\n";
+        cout << "2. List Books\n";
+        cout << "3. Search Book\n";
+        cout << "4. Update Book\n";
+        cout << "5. Delete Book\n";
+        cout << "6. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            lib.addBook();
+            break;
+
+        case 2:
+            lib.listBooks();
+            break;
+
+        case 3:
+            lib.searchBook();
+            break;
+
+        case 4:
+            lib.updateBook();
+            break;
+
+        case 5:
+            lib.deleteBook();
+            break;
+
+        case 6:
+            cout << "Exiting program...\n";
+            break;
+
+        default:
+            cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
